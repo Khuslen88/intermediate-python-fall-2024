@@ -5,23 +5,23 @@ import pandas as pd
 # Title
 st.title("Data Visualization App")
 
-# File upload section
+# File upload
 uploaded_file = st.file_uploader("Drag and drop a CSV file here", type="csv")
 
-# If file is uploaded, read the file
+# Read the file
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     st.write("Data Preview:")
     st.write(df)
 
-    # Dropdown for selecting chart type
+    # chart type dropdown
     chart_type = st.selectbox("Select chart type:", ["Bar Chart", "Line Chart", "Pie Chart"])
 
-    # Dropdown for selecting columns
+    # columns dropdown
     x_column = st.selectbox("Select X-axis column:", df.columns)
     y_column = st.selectbox("Select Y-axis column:", df.columns)
 
-    # Generate chart based on selection
+    # Chart selection
     if st.button("Generate Chart"):
         if chart_type == "Bar Chart":
             fig = px.bar(df, x=x_column, y=y_column, title="Bar Chart")
