@@ -3,7 +3,7 @@ import plotly.express as px
 import pandas as pd
 
 # Title
-st.title("Data Visualization App with File Upload")
+st.title("Data Visualization App")
 
 # File upload section
 uploaded_file = st.file_uploader("Drag and drop a CSV file here", type="csv")
