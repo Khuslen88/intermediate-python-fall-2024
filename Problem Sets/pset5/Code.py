@@ -1,52 +1,36 @@
 import streamlit as st
+import plotly.express as px
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.express as px
-
-import streamlit as st
-import plotly.express as px
 
 # Title
-st.title("Data Visualization App")
+st.title("Data Visualization App with File Upload")
 
-# Text inputs
-values = st.text_input("Enter values separated by commas:", "10, 20, 30")
+# File upload section
+uploaded_file = st.file_uploader("Drag and drop a CSV file here", type="csv")
 
-#Chart types
-chart_type = st.selectbox("Select chart type:", ["Bar Chart", "Line Chart", "Pie Chart"])
+# If file is uploaded, read the file
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.write("Data Preview:")
+    st.write(df)
 
-# Processing inputs
-try:
-    data = list(map(int, values.split(",")))
-except ValueError:
-    st.error("Please enter valid numbers separated by commas.")
-    data = []
+    # Dropdown for selecting chart type
+    chart_type = st.selectbox("Select chart type:", ["Bar Chart", "Line Chart", "Pie Chart"])
 
-# Plotting the data
-if st.button("Generate Chart") and data:
-    if chart_type == "Bar Chart":
-        fig = px.bar(
-            x=list(range(len(data))),
-            y=data,
-            labels={"x": "Index", "y": "Value"},
-            title=f"Bar Chart for {values} Data"
-        )
+    # Dropdown for selecting columns
+    x_column = st.selectbox("Select X-axis column:", df.columns)
+    y_column = st.selectbox("Select Y-axis column:", df.columns)
 
-    elif chart_type == "Line Chart":
-        fig = px.line(
-            x=list(range(len(data))),
-            y=data,
-            labels={"x": "Index", "y": "Value"},
-            title=f"Line Chart for {values} Data"
-        )
-
-    elif chart_type == "Pie Chart":
-        fig = px.pie(
-            names=[f"Item {i}" for i in range(len(data))],
-            values=data,
-            title=f"Pie Chart for {values} Data"
-        )
-
-    st.plotly_chart(fig)
+    # Generate chart based on selection
+    if st.button("Generate Chart"):
+        if chart_type == "Bar Chart":
+            fig = px.bar(df, x=x_column, y=y_column, title="Bar Chart")
+        elif chart_type == "Line Chart":
+            fig = px.line(df, x=x_column, y=y_column, title="Line Chart")
+        elif chart_type == "Pie Chart":
+            fig = px.pie(df, names=x_column, values=y_column, title="Pie Chart")
+        
+        # Display the plot
+        st.plotly_chart(fig)
+else:
+    st.info("Please upload a CSV file to get started.")
